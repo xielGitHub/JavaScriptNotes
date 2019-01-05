@@ -61,8 +61,6 @@ alert(a[0]);//1
 
 前面已经提到，在定义一个对象或数组时，变量存放的往往只是一个地址。当我们使用对象拷贝时，如果属性是对象或数组时，这时候我们传递的也只是一个地址。因此子对象在访问该属性时，会根据地址回溯到父对象指向的堆内存中，即父子对象发生了关联，两者的属性值会指向同一内存空间。
 
-[![复制代码](https://common.cnblogs.com/images/copycode.gif)](javascript:void(0);)
-
 ```
 var a = {
          key1:"11111"
@@ -82,7 +80,7 @@ var b = Copy(a);
      alert(a.key3);    //undefined
 ```
 
-[![复制代码](https://common.cnblogs.com/images/copycode.gif)](javascript:void(0);)
+
 
 a对象中key1属性是字符串，key2属性是数组。a拷贝到b，12属性均顺利拷贝。给b对象新增一个字符串类型的属性key3时，b能正常修改，而a中无定义。说明子对象的key3（基本类型）并没有关联到父对象中，所以undefined。
 
@@ -102,7 +100,7 @@ alert(a.key2);    //小辉，小辉，大辉
 
 或许以上并不是我们在实际编码中想要的结果，我们不希望父子对象之间产生关联，那么这时候可以用到深拷贝。既然属性值类型是数组和或象时只会传址，那么我们就用递归来解决这个问题，把父对象中所有属于对象的属性类型都遍历赋给子对象即可。测试代码如下：
 
-[![复制代码](https://common.cnblogs.com/images/copycode.gif)](javascript:void(0);)
+
 
 ```
 function Copy(p, c) {
@@ -125,8 +123,10 @@ var b={};
      alert(a.key2);    //小辉，小辉
 ```
 
-[![复制代码](https://common.cnblogs.com/images/copycode.gif)](javascript:void(0);)
+
 
 由上可知，修改b的key2数组时，没有使a父对象中的key2数组新增一个值，即子对象没有影响到父对象a中的key2。其存储模式大致如下：
 
-[![648416137877](https://images2015.cnblogs.com/blog/707050/201510/707050-20151016111841616-261908810.png)](http://images2015.cnblogs.com/blog/707050/201510/707050-20151016111841382-832700870.png)相关文章链接:https://www.cnblogs.com/chengguanhui/p/4737413.html
+[![648416137877](https://images2015.cnblogs.com/blog/707050/201510/707050-20151016111841616-261908810.png)](http://images2015.cnblogs.com/blog/707050/201510/707050-20151016111841382-832700870.png)
+
+相关文章链接:https://www.cnblogs.com/chengguanhui/p/4737413.html
