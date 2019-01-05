@@ -146,3 +146,7 @@ function f1() {
 
 ·JavaScript垃圾回收机制，如果一个对象不再被引用，那么这个对象就会被GC回收，如果两个对象相互引用，而不再被第三方引用，那么这两个对象会被GC回收，上述父函数被子函数引用，子函数又被外部c引用，这就是父函数不被回收的原因；
 
+相关文章链接：http://www.cnblogs.com/dolphinX/archive/2012/09/29/2708763.html
+
+相关文章链接：https://www.jianshu.com/p/26c81fde22fb
+
