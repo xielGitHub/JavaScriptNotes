@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    body {
+      overflow:hidden;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="motion">Canvas is not supported in your browser.</canvas>
+  <script>
+    // requestAnimationFrame polyfill by Erik Möller.
+    if (!Date.now)
+        Date.now = function() { return new Date().getTime(); };
+
+    (function() {
+        'use strict';
+        
+        var vendors = ['webkit', 'moz'];
+        for (var i = 0; i < vendors.length && !window.requestAnimationFrame; ++i) {
+            var vp = vendors[i];
+            window.requestAnimationFrame = window[vp+'RequestAnimationFrame'];
+            window.cancelAnimationFrame = (window[vp+'CancelAnimationFrame']
+                                      || window[vp+'CancelRequestAnimationFrame']);
+        }
+        if (/iP(ad|hone|od).*OS 6/.test(window.navigator.userAgent) // iOS6 is buggy
+            || !window.requestAnimationFrame || !window.cancelAnimationFrame) {
+            var lastTime = 0;
+            window.requestAnimationFrame = function(callback) {
+                var now = Date.now();
+                var nextTime = Math.max(lastTime + 16, now);
+                return setTimeout(function() { callback(lastTime = nextTime); },
+                                  nextTime - now);
+            };
+            window.cancelAnimationFrame = clearTimeout;
+        }
+    }());
+    // 随机颜色
+    var getRandomColor = function(){
+      return '#'+(Math.random()*0xffffff<<0).toString(16);
+    }
+
+    var canvas = document.getElementById("motion"), 
+        c = canvas.getContext("2d"),
+        particles = {},
+        particleIndex = 0,
+        particleNum = 0.2;
+
+    // 设置canvas 宽高
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    function Particle(){
+      // 生成小圆点的中心位置坐标
+      this.x = canvas.width/2;
+      this.y = canvas.height/2;
+      // x，y移动的速度
+      this.vx = Math.random() * 6 - 3;
+      this.vy = Math.random() * 4 - 2;
+      // 增长速度
+      this.growth = ( Math.abs(this.vx) + Math.abs(this.vy) ) * 0.007;
+
+      // 唯一key
+      particleIndex++;
+      particles[particleIndex] = this;
+      this.id = particleIndex;
+      // 圆的大小
+      this.size = Math.random() * 1;
+      // 颜色
+      this.color = getRandomColor();
+    }
+    // 绘图
+    Particle.prototype.draw = function(){
+      // 累加x坐标
+      this.x += this.vx;
+      // 累加y坐标
+      this.y += this.vy;
+      // 增加圆的半径
+      this.size += this.growth;
+      // 当圆x坐标或者y坐标超出边界时，删除对应数据
+      if(this.x > canvas.width || this.y > canvas.height){
+        delete particles[this.id];
+      }
+      // 设置填充颜色
+      c.fillStyle = this.color;
+      c.beginPath();
+      // 画圆
+      c.arc(this.x, this.y, this.size,0*Math.PI,2*Math.PI);
+      // 填充
+      c.fill();
+    };
+    // 动画函数
+    function animate(){
+      // 调用动画
+      requestAnimationFrame( animate );
+      // 设置canvas画板背景色
+      c.fillStyle = "#000";
+      // 重置canvas
+      c.fillRect(0,0,canvas.width,canvas.height);
+      // 随机生成小球
+      if(Math.random() > particleNum){
+        new Particle();
+      }
+      // 循环遍历绘制小球
+      for(var i in particles){
+        particles[i].draw();
+      }
+    }
+    requestAnimationFrame( animate );
+  </script>
+</body>
+</html>
